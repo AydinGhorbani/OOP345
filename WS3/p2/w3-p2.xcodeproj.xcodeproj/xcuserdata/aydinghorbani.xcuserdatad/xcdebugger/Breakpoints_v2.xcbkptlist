@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "972387B9-6E94-4232-90B0-B9DD466ED95C"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "173ACF4D-847D-480E-96CB-5822C653BCEA"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "w3-p2/Book.h"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2"
+            endingLineNumber = "2"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "67D83D22-AC87-45F9-B8CF-AAC4159223C7"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "w3-p2/w3_p2.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "96"
+            endingLineNumber = "96"
+            landmarkName = "main(argc, argv)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9FF72C38-94E4-4665-B403-580B1D71AFF1"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "w3-p2/Collection.h"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
+            landmarkName = "getLargestItem()"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "9FF72C38-94E4-4665-B403-580B1D71AFF1 - ace2a8410081c741"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "sdds::Collection&lt;int, 10u&gt;::getLargestItem() const"
+                  moduleName = "w3-p2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aydinghorbani/Desktop/OOP%20345/ws3/w3-p2/w3-p2/Collection.h"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "68"
+                  endingLineNumber = "68"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  uuid = "9FF72C38-94E4-4665-B403-580B1D71AFF1 - 21e51d2f1bebb92"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "sdds::Collection&lt;double, 10u&gt;::getLargestItem() const"
+                  moduleName = "w3-p2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aydinghorbani/Desktop/OOP%20345/ws3/w3-p2/w3-p2/Collection.h"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "68"
+                  endingLineNumber = "68"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  uuid = "9FF72C38-94E4-4665-B403-580B1D71AFF1 - 67229df661e70fe8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "sdds::Collection&lt;sdds::Book, 10u&gt;::getLargestItem() const"
+                  moduleName = "w3-p2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aydinghorbani/Desktop/OOP%20345/ws3/w3-p2/w3-p2/Collection.h"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "68"
+                  endingLineNumber = "68"
+                  offsetFromSymbolStart = "44">
+               </Location>
+               <Location
+                  uuid = "9FF72C38-94E4-4665-B403-580B1D71AFF1 - e77a1ce5439cf949"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "sdds::Collection&lt;int, 72u&gt;::getLargestItem() const"
+                  moduleName = "w3-p2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aydinghorbani/Desktop/OOP%20345/ws3/w3-p2/w3-p2/Collection.h"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "68"
+                  endingLineNumber = "68"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  uuid = "9FF72C38-94E4-4665-B403-580B1D71AFF1 - 169f4afe5875ed9a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "sdds::Collection&lt;double, 72u&gt;::getLargestItem() const"
+                  moduleName = "w3-p2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aydinghorbani/Desktop/OOP%20345/ws3/w3-p2/w3-p2/Collection.h"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "68"
+                  endingLineNumber = "68"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  uuid = "9FF72C38-94E4-4665-B403-580B1D71AFF1 - f2e8678178a221d0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "sdds::Collection&lt;sdds::Book, 72u&gt;::getLargestItem() const"
+                  moduleName = "w3-p2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aydinghorbani/Desktop/OOP%20345/ws3/w3-p2/w3-p2/Collection.h"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "68"
+                  endingLineNumber = "68"
+                  offsetFromSymbolStart = "44">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
