@@ -31,7 +31,7 @@ void printdivider(size_t cnt, const std::string heading = "") {
   std::cout << std::endl;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   std::cout << "Command Line:\n";
   std::cout << "--------------------------\n";
   for (int i = 0; i < argc; i++)

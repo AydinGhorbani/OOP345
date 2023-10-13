@@ -9,12 +9,12 @@
  The parts that i searched or got help to do are mentioned.
  ****************************************
  */
-
 #ifndef SDDS_BOOK_H
 #define SDDS_BOOK_H
 
-#include <iostream>
 #include <string>
+#include <iostream>
+#include <iomanip>
 
 namespace sdds {
     class Book {
@@ -26,16 +26,14 @@ namespace sdds {
         std::string m_description;
 
     public:
-        Book();
-        Book(const std::string& strBook);
+        Book();  // Default constructor
+        Book(const std::string& strBook); // Constructor that extracts information from a string
         const std::string& title() const;
         const std::string& country() const;
         const size_t& year() const;
         double& price();
-        
         friend std::ostream& operator<<(std::ostream& os, const Book& book);
     };
 }
 
-
-#endif // Book_h
+#endif // SDDS_BOOK_H

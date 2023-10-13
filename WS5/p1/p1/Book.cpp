@@ -11,32 +11,43 @@
  */
 
 #include "Book.h"
-#include <iostream>
-#include <sstream>
-#include <iomanip>
+
 
 namespace sdds {
-    Book::Book() : m_year(0), m_price(0.0) {
+
+    Book::Book() : m_year(0), m_price(0.0) {}
+
+    Book::Book(const std::string& strBook) : m_year(0), m_price(0.0) {
+        size_t next_pos = 0;
+        size_t current_pos = 0;
+        for (int i = 0; i < 6; i++) {
+            next_pos = strBook.find(',', current_pos);
+            std::string token = strBook.substr(current_pos, next_pos - current_pos);
+            switch (i) {
+                case 0:
+                    m_author = token;
+                    break;
+                case 1:
+                    m_title = token;
+                    break;
+                case 2:
+                    m_country = token;
+                    break;
+                case 3:
+                    m_price = std::stod(token);
+                    break;
+                case 4:
+                    m_year = std::stoi(token);
+                    break;
+                case 5:
+                    m_description = token;
+                    break;
+            }
+            current_pos = next_pos + 1;
+        }
     }
 
-    Book::Book(const std::string& strBook) {
-        std::istringstream iss(strBook);
-        std::string token;
-        // Tokenize the input string and initialize the attributes
-        getline(iss, token, ','); // AUTHOR
-        m_author = token;
-        getline(iss, token, ','); // TITLE
-        m_title = token;
-        getline(iss, token, ','); // COUNTRY
-        m_country = token;
-        getline(iss, token, ','); // PRICE
-        m_price = std::stod(token);
-        getline(iss, token, ','); // YEAR
-        m_year = std::stoi(token);
-        getline(iss, token, ','); // DESCRIPTION
-        m_description = token;
-    }
-
+    // Queries
     const std::string& Book::title() const {
         return m_title;
     }
@@ -53,13 +64,12 @@ namespace sdds {
         return m_price;
     }
 
+    // Friend helper to overload the insertion operator
     std::ostream& operator<<(std::ostream& os, const Book& book) {
-        os << std::setw(20) << book.m_author << "|";
-        os << std::setw(20) << book.m_title << "|";
-        os << std::setw(5) << book.m_country << "|";
-        os << std::setw(5) << book.m_year << "|";
-        os << std::fixed << std::setprecision(2) << std::setw(6) << book.m_price << "|";
-        os << book.m_description;
+        os << std::setw(20) << book.m_author << "| ";
+        os << std::setw(22) << book.m_title << "| ";
+        os <<std::setw(5) << book.m_country << "| ";
+        os << std::setw(4) << book.m_year << "| ";
         return os;
     }
 }
