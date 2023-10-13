@@ -36,3 +36,4 @@ xcuserdata/
 *.user
 *.suo
 *.sln.docstates
+.DS_Store
