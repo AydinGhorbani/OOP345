@@ -11,6 +11,7 @@
 #include "Book.h" // intentional
 
 
+
 // Cheching if header guards exist and follow convention.
 #ifndef SDDS_BOOK_H
     #error "The header guard for 'Book.h' doesn't follow the convention!"
@@ -48,6 +49,7 @@ int main(int argc, char** argv)
             // Check for comments
             if (line[0] != '#') {
                 // Create a Book object and store it in the library
+                for(int i = 0; i < line.size(); i++)
                 library[index] = sdds::Book(line);
                 index++;
             }

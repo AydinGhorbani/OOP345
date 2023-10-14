@@ -15,6 +15,9 @@
 #include <string>
 #include <iostream>
 #include <iomanip>
+#include <string>
+#include <cctype>
+
 
 namespace sdds {
     class Book {
@@ -32,6 +35,7 @@ namespace sdds {
         const std::string& country() const;
         const size_t& year() const;
         double& price();
+        std::string eraseSpaces(std::string& str);
         friend std::ostream& operator<<(std::ostream& os, const Book& book);
     };
 }
