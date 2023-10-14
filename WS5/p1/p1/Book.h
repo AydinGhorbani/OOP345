@@ -35,6 +35,7 @@ namespace sdds {
         const std::string& country() const;
         const size_t& year() const;
         double& price();
+        void setPrice(double price);
         std::string eraseSpaces(std::string& str);
         friend std::ostream& operator<<(std::ostream& os, const Book& book);
     };

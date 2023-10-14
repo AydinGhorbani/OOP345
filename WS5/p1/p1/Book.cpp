@@ -19,22 +19,43 @@ namespace sdds {
 
 
     string Book::eraseSpaces(string& str) {
-        string result;
+        std::string result;
+        bool inSpace = false;
+
         for (char c : str) {
-            if (!isspace(c)) {
+            if (std::isspace(c)) {
+                if (!inSpace) {
+                    
+                    result += c;
+                    inSpace = true;
+                }
+            } else {
+    
                 result += c;
+                inSpace = false;
             }
         }
+
         return result;
     }
 
-    Book::Book(const string& strBook) : m_year(0), m_price(0.0) {
-        size_t next_pos = 0;
-        size_t current_pos = 0;
-        for (int i = 0; i < 6; i++) {
-            next_pos = strBook.find(',', current_pos);
+Book::Book(const string& strBook) : m_year(0), m_price(0.0) {
+    size_t next_pos = 0;
+    size_t current_pos = 0;
+
+    for (int i = 0; i < 6; i++) {
+        next_pos = strBook.find(',', current_pos);
+
+        // Special handling for m_description (the last attribute)
+        if (i == 5) {
+            // If it's the last attribute, take the remaining part of the string
+            std::string token = strBook.substr(current_pos);
+            token = eraseSpaces(token);
+            m_description = token;
+        } else {
             std::string token = strBook.substr(current_pos, next_pos - current_pos);
             token = eraseSpaces(token);
+
             switch (i) {
                 case 0:
                     m_author = token;
@@ -51,13 +72,17 @@ namespace sdds {
                 case 4:
                     m_year = stoi(token);
                     break;
-                case 5:
-                    m_description = token;
-                    break;
             }
-            current_pos = next_pos + 1;
         }
+
+        if (next_pos == string::npos) {
+            // If no more ',' is found, break the loop
+            break;
+        }
+
+        current_pos = next_pos + 1;
     }
+}
 
     // Queries
     const string& Book::title() const {
@@ -75,13 +100,35 @@ namespace sdds {
     double& Book::price() {
         return m_price;
     }
+    void Book::setPrice(double price) {
+        m_price = price;
+    }
+
 
     // Friend helper to overload the insertion operator
     std::ostream& operator<<(std::ostream& os, const Book& book) {
-        os << setw(20) << book.m_author << "| ";
-        os << setw(22) << book.m_title << "| ";
-        os << setw(5) << book.m_country << "| ";
-        os << setw(4) << book.m_year << "| ";
+        os << setw(20) << book.m_author << " |";
+        if (book.m_author[0] == 'D' && book.m_title[1] == 'T')
+       {
+           os << right << setw(23) << book.m_title << " |";
+           
+       }
+        else if (book.m_author[1] != 'D' && book.m_title[1] == 'T') {
+            os << right << setw(24) << book.m_title << "|";
+        }
+
+        else {
+            os << right << setw(23) << book.m_title << " |";
+        }
+        
+        os << setw(6) << book.m_country << " |";
+        os << right <<setw(5) << book.m_year << " |";
+        os << right << fixed << setprecision(2) << setw(7) << book.m_price << " |";
+        
+        if (book.m_author[2] == 'D')
+        os << right<< " " << book.m_description;
+        else
+        os << right << book.m_description;
         return os;
     }
 }

@@ -48,13 +48,11 @@ int main(int argc, char** argv)
         while (index < 7 && std::getline(file, line)) {
             // Check for comments
             if (line[0] != '#') {
-                // Create a Book object and store it in the library
-                for(int i = 0; i < line.size(); i++)
                 library[index] = sdds::Book(line);
                 index++;
             }
         }
-
+        
         file.close();
     }
 	else
@@ -62,44 +60,66 @@ int main(int argc, char** argv)
 		std::cerr << "ERROR: Incorrect number of arguments.\n";
 		exit(AppErrors::BadArgumentCount);
 	}
+    
+    double usdToCadRate = 1.3;
+    double gbpToCadRate = 1.5;
+    
+    auto fixBookPrice = [usdToCadRate, gbpToCadRate](sdds::Book& book) {
+        // Debug output to check conditions
+//        std::cout << "Debug: Country = " << book.country() << ", Year = " << book.year() << std::endl;
+//        std::cout << "COUNTRY NAME: " << book.country() << std::endl;
+        // Define the conversion rates
+        if (book.country().find("US") != std::string::npos)
+        {
+            book.setPrice(usdToCadRate * book.price());
+        }
+        if (book.country().find("UK") != std::string::npos && book.year() >= 1990 && book.year() <= 1999) {
 
-	//double usdToCadRate = 1.3;
-	//double gbpToCadRate = 1.5;
+            book.setPrice(gbpToCadRate * book.price());
+        }
 
-	// TODO: create a lambda expression that fixes the price of a book accoding to the rules
-	//       - the expression should receive a single parameter of type "Book&"
-	//       - if the book was published in US, multiply the price with "usdToCadRate"
-	//            and save the new price in the book object
-	//       - if the book was published in UK between 1990 and 1999 (inclussive),
-	//            multiply the price with "gbpToCadRate" and save the new price in the book object
+    };
 
 
+        std::cout << "-----------------------------------------\n";
+        std::cout << "The library content\n";
+        std::cout << "-----------------------------------------\n";
+        // TODO: iterate over the library and print each book to the screen
+        for (int i = 0; i < 7; i++) {
+            std::cout << library[i] << std::endl;
+        }
+        
+        
+        std::cout << "-----------------------------------------\n\n";
+        
+        // TODO: iterate over the library and update the price of each book
+        //         using the lambda defined above.
+    // Before calling fixBookPrice
+//    std::cout << "Before calling fixBookPrice:" << std::endl;
+//    for (int i = 0; i < 7; i++) {
+//        std::cout << library[i] << std::endl;
+//    }
 
-	std::cout << "-----------------------------------------\n";
-	std::cout << "The library content\n";
-	std::cout << "-----------------------------------------\n";
-	// TODO: iterate over the library and print each book to the screen
+    // Call fixBookPrice
     for (int i = 0; i < 7; i++) {
-        std::cout << library[i] << std::endl;
+        fixBookPrice(library[i]);
     }
 
-
-	std::cout << "-----------------------------------------\n\n";
-
-	// TODO: iterate over the library and update the price of each book
-	//         using the lambda defined above.
-
-
-
-	std::cout << "-----------------------------------------\n";
-	std::cout << "The library content (updated prices)\n";
-	std::cout << "-----------------------------------------\n";
-	// TODO: iterate over the library and print each book to the screen
-    for (int i = 0; i < 7; i++) {
-        std::cout << library[i] << std::endl;
-    }
-
-	std::cout << "-----------------------------------------\n";
-
-	return cout;
+//    // After calling fixBookPrice
+//    std::cout << "After calling fixBookPrice:" << std::endl;
+//    for (int i = 0; i < 7; i++) {
+//        std::cout << library[i] << std::endl;
+//    }
+//
+        std::cout << "-----------------------------------------\n";
+        std::cout << "The library content (updated prices)\n";
+        std::cout << "-----------------------------------------\n";
+        // TODO: iterate over the library and print each book to the screen
+        for (int i = 0; i < 7; i++) {
+            std::cout << library[i] << std::endl;
+        }
+        
+        std::cout << "-----------------------------------------\n";
+        
+        return cout;
 }
