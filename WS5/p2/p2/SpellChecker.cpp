@@ -1,6 +1,7 @@
 #include "SpellChecker.h"
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 
 namespace sdds {
 using namespace std;

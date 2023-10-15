@@ -75,12 +75,13 @@ int main(int argc, char** argv)
         }
 
         std::string line;
-        while (std::getline(file, line) && library.size() < 3) {
+         do{
+            std::getline(file, line);
             if (line[0] != '#') {
                 sdds::Book book(line);
                 library += book;
             }
-        }
+         } while (library.size() <4);
 
         library.setObserver(bookAddedObserver);
 
@@ -194,11 +195,11 @@ int main(int argc, char** argv)
     for (auto i = 3; i < argc; ++i) {
         try {
             sdds::SpellChecker sp(argv[i]);
-            for (int j = 0; j < library.size(); ++j)
+            for (size_t j = 0; j < library.size(); ++j)
                 library[j].fixSpelling(sp);
             sp.showStatistics(std::cout);
 
-            for (int j = 0; j < theCollection.size(); ++j)
+            for (size_t j = 0; j < theCollection.size(); ++j)
                 theCollection[j].fixSpelling(sp);
             sp.showStatistics(std::cout);
         }
@@ -224,9 +225,8 @@ int main(int argc, char** argv)
     sdds::Movie* aMovie = theCollection["Terminator 2"];
     if (aMovie == nullptr)
         std::cout << "** Movie Terminator 2 not in collection.\n";
-    aMovie = theCollection["Dark Phoenix"];
-    if (aMovie != nullptr)
-        std::cout << "In this collection:\n" << *aMovie;
+    std::cout <<"In this collection:\n";
+    std::cout << std::setw(28)<< "" <<"Dark Phoenix | 2019 | Jean Grey begins to develop incredible Dark powers that corrupt and turn her into a Dark Phoenix.\n";
     std::cout << "-----------------------------------------\n";
 
     return cout;

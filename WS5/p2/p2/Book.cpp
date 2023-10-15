@@ -1,96 +1,34 @@
 /*
- ****************************************
- Full Name  : Aydin Ghorbani
- Student ID#: 124170226
- Email      : aghorbani8@myseneca.ca
- 
- 
- I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
- The parts that i searched or got help to do are mentioned.
- ****************************************
- */
+****************************************
+Full Name  : Aydin Ghorbani
+Student ID#: 124170226
+Email      : aghorbani8@myseneca.ca
+
+I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+The parts that I searched or got help to do are mentioned.
+****************************************
+*/
 
 #include "Book.h"
-
+#include <sstream>
 using namespace std;
 
 namespace sdds {
 
-    Book::Book() : m_year(0), m_price(0.0) {}
-
-
-    string Book::eraseSpaces(string& str) {
-        std::string result;
-        bool inSpace = false;
-
-        for (char c : str) {
-            if (std::isspace(c)) {
-                if (!inSpace) {
-                    
-                    result += c;
-                    inSpace = true;
-                }
-            } else {
-    
-                result += c;
-                inSpace = false;
-            }
-        }
-
-        return result;
+    Book::Book() {
+        m_author = {};
+        m_title = {};
+        m_country = {};
+        m_year = 0;
+        m_price = 0.0;
+        m_description = {}; 
     }
 
-Book::Book(const string& strBook) : m_year(0), m_price(0.0) {
-    size_t next_pos = 0;
-    size_t current_pos = 0;
-
-    for (int i = 0; i < 6; i++) {
-        next_pos = strBook.find(',', current_pos);
-
-        // Special handling for m_description (the last attribute)
-        if (i == 5) {
-            // If it's the last attribute, take the remaining part of the string
-            std::string token = strBook.substr(current_pos);
-            token = eraseSpaces(token);
-            m_description = token;
-        } else {
-            std::string token = strBook.substr(current_pos, next_pos - current_pos);
-            token = eraseSpaces(token);
-
-            switch (i) {
-                case 0:
-                    m_author = token;
-                    break;
-                case 1:
-                    m_title = token;
-                    break;
-                case 2:
-                    m_country = token;
-                    break;
-                case 3:
-                    m_price = stod(token);
-                    break;
-                case 4:
-                    m_year = stoi(token);
-                    break;
-            }
-        }
-
-        if (next_pos == string::npos) {
-            // If no more ',' is found, break the loop
-            break;
-        }
-
-        current_pos = next_pos + 1;
-    }
-}
-
-    // Queries
-    const string& Book::title() const {
+    const std::string& Book::title() const {
         return m_title;
     }
 
-    const string& Book::country() const {
+    const std::string& Book::country() const {
         return m_country;
     }
 
@@ -101,43 +39,56 @@ Book::Book(const string& strBook) : m_year(0), m_price(0.0) {
     double& Book::price() {
         return m_price;
     }
+
+    std::string trim(std::string str) {
+        std::string result = str.erase(0, str.find_first_not_of(" "));
+        result = result.substr(0, result.find_last_not_of(" ") + 1);
+        return result;
+    }
+
+    Book::Book(const std::string& strBook) {
+        std::istringstream iss(strBook);
+        std::string token;
+
+        std::getline(iss, token, ',');
+        m_author = trim(token);
+        
+        std::getline(iss, token, ',');
+        m_title = trim(token);
+
+        std::getline(iss, token, ',');
+        m_country = trim(token);
+
+        std::getline(iss, token, ',');
+        m_price = stod(trim(token));
+
+        std::getline(iss, token, ',');
+        m_year = stoi(trim(token));
+
+        std::getline(iss, token);
+        m_description = trim(token);
+    }
+
+
+    std::ostream& operator<<(std::ostream& os, const Book& book) {
+        os << std::setw(20) << std::right << book.m_author << " | ";
+        os << std::setw(22) << std::right << book.title() << " | ";
+        os << std::setw(5) << std::right << book.country() << " | ";
+        os << std::setw(4) << book.year() << " | ";
+        os << std::setw(6) << std::setprecision(2) << std::fixed << std::right << book.m_price << " | ";
+        os << std::left << book.m_description << std::endl;
+
+        return os;
+    }
+
     void Book::setPrice(double price) {
         m_price = price;
     }
 
-void Book::fixSpelling(SpellChecker& spellChecker) const{
+    void Book::fixSpelling(SpellChecker& spellChecker) const {
         // Call the SpellChecker operator() on the title and description
         spellChecker(const_cast<std::string&>(m_title));
         spellChecker(const_cast<std::string&>(m_description));
     }
 
-
-
-    // Friend helper to overload the insertion operator
-    std::ostream& operator<<(std::ostream& os, const Book& book) {
-        os << setw(20) << book.m_author << " |";
-        if (book.m_author[0] == 'D' && book.m_title[1] == 'T')
-       {
-           os << right << setw(23) << book.m_title << " |";
-           
-       }
-        else if (book.m_author[1] != 'D' && book.m_title[1] == 'T') {
-            os << right << setw(24) << book.m_title << "|";
-        }
-
-        else {
-            os << right << setw(23) << book.m_title << " |";
-        }
-        
-        os << setw(6) << book.m_country << " |";
-        os << right <<setw(5) << book.m_year << " |";
-        os << right << fixed << setprecision(2) << setw(7) << book.m_price << " |";
-        
-        if (book.m_author[2] == 'D')
-        os << right<< " " << book.m_description;
-        else
-        os << right << book.m_description;
-        return os;
-    }
-}
-
+}  // namespace sdds

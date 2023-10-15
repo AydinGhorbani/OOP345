@@ -12,13 +12,11 @@
 #ifndef SDDS_BOOK_H
 #define SDDS_BOOK_H
 
-#include "SpellChecker.h"
 #include <string>
 #include <iostream>
 #include <iomanip>
-#include <string>
-#include <cctype>
 #include "Collection.h"
+#include "SpellChecker.h"
 
 namespace sdds {
     class Book {
@@ -26,24 +24,21 @@ namespace sdds {
         std::string m_title;
         std::string m_country;
         size_t m_year;
-
+        double m_price;
         std::string m_description;
 
     public:
-        double m_price;
-        Book();  // Default constructor
-        Book(const std::string& strBook); // Constructor that extracts information from a string
+        Book();
+        Book(const std::string& strBook);
         const std::string& title() const;
         const std::string& country() const;
         const size_t& year() const;
-        double& price() ;
+        double& price();
         void setPrice(double price);
-        std::string eraseSpaces(std::string& str);
+        void fixSpelling(SpellChecker& spellChecker) const;
+
         friend std::ostream& operator<<(std::ostream& os, const Book& book);
-        void fixSpelling( SpellChecker& spellChecker) const;
-        
     };
 }
 
 #endif // SDDS_BOOK_H
-
