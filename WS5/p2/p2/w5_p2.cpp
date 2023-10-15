@@ -32,11 +32,11 @@
 
 int cout = 0; // won't compile if headers don't follow convention regarding namespaces
 
-enum AppErrors
-{
-    CannotOpenFile = 1, // An input file cannot be opened
-    BadArgumentCount = 2, // The application didn't receive anough parameters
-};
+//enum AppErrors
+//{
+//    CannotOpenFile = 1, // An input file cannot be opened
+//    BadArgumentCount = 2, // The application didn't receive anough parameters
+//};
 
 // The observer function for adding books to the collection:
 //   should be called every time a new book is added to the collection
@@ -71,7 +71,7 @@ int main(int argc, char** argv)
         std::ifstream file(argv[1]);
         if (!file) {
             std::cerr << "ERROR: Cannot open file " << argv[1] << std::endl;
-            return AppErrors::CannotOpenFile;
+ //           return AppErrors::CannotOpenFile;
         }
 
         std::string line;
@@ -96,7 +96,7 @@ int main(int argc, char** argv)
     else
     {
         std::cerr << "ERROR: Incorrect number of arguments.\n";
-        std::exit(AppErrors::BadArgumentCount);
+//        std::exit(AppErrors::BadArgumentCount);
     }
 
     const double usdToCadRate = 1.3;

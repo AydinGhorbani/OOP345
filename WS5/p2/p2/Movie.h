@@ -20,6 +20,10 @@ namespace sdds {
         const std::string& title() const;
         void fixSpelling(SpellChecker& spellChecker) const ;
         std::string trim(std::string str);
+        std::string getDescription() const {
+            return m_description;
+        }
+
         friend std::ostream& operator<<(std::ostream& os, const Movie& movie);
     };
 }

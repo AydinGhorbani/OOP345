@@ -3,6 +3,7 @@
 
 
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <vector>
 #include <functional>
@@ -41,17 +42,13 @@ public:
     // Overload += operator to add an item to the collection
     Collection<T>& operator+=(const T& item) {
         if (!containsItem(item)) {
-            // Create a new array with increased capacity
             T* newItems = new T[size_ + 1];
             // Copy existing items
             for (size_t i = 0; i < size_; ++i) {
                 newItems[i] = items_[i];
             }
-            // Add the new item
             newItems[size_] = item;
-            // Delete the old items array
             delete[] items_;
-            // Update the items array and size
             items_ = newItems;
             size_++;
             
@@ -66,7 +63,7 @@ public:
     // Overload [] operator to access items by index
     const T& operator[](size_t idx) const {
         if (idx >= size_) {
-            throw std::out_of_range("Bad index " + std::to_string(idx) + ". Collection has " + std::to_string(size_) + " items.");
+            throw std::out_of_range("Bad index [" + std::to_string(idx) + "]. Collection has [" + std::to_string(size_) + "] items.");
         }
         return items_[idx];
     }
@@ -80,18 +77,19 @@ public:
         }
         return nullptr;
     }
-    
+
     friend std::ostream& operator<<(std::ostream& os, const Collection& col) {
         for (size_t i = 0; i < col.size_; ++i) {
             os << col.getItem(i);
         }
         return os;
     }
+
     const T& getItem(size_t index) const {
         if (index < size_) {
             return items_[index];
         } else {
-            throw std::out_of_range("Bad index " + std::to_string(index) + ". Collection has " + std::to_string(size_) + " items.");
+            throw std::out_of_range("Bad index [" + std::to_string(index) + "]. Collection has [" + std::to_string(size_) + "] items.");
         }
     }
     

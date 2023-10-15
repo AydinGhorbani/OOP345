@@ -36,6 +36,9 @@ namespace sdds {
         double& price();
         void setPrice(double price);
         void fixSpelling(SpellChecker& spellChecker) const;
+        std::string getDescription() const {
+            return m_description;
+        }
 
         friend std::ostream& operator<<(std::ostream& os, const Book& book);
     };

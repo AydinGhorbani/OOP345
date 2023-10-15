@@ -2,15 +2,31 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <string>
+
+using namespace std;
 
 namespace sdds {
-using namespace std;
-int m_counts[] = {0};
-    void SpellChecker::showStatistics(std::ostream& os) const {
-        os << "Spellchecker Statistics" << std::endl;
+    int m_counts[] = {0};
+
+    string trim(const string& str) {
+        string result = str;
+        // Remove leading spaces
+        while (!result.empty() && isspace(result.front())) {
+            result.erase(result.begin());
+        }
+        // Remove trailing spaces
+        while (!result.empty() && isspace(result.back())) {
+            result.pop_back();
+        }
+        return result;
+    }
+
+    void SpellChecker::showStatistics(ostream& os) const {
+        os << "Spellchecker Statistics" << endl;
         if (m_counts[0] == 5) m_counts[0] -= 1;
         for (int i = 0; i < 6; ++i) {
-            os << std::right <<  std::setw(15) << m_badWords[i] << ": " << m_counts[i] << " replacements" << std::endl;
+            os << right << setw(15) << m_badWords[i] << ": " << m_counts[i] << " replacements" << endl;
         }
     }
 
@@ -19,36 +35,36 @@ int m_counts[] = {0};
             m_counts[i] = 0;  // Initialize the counts for this instance
         }
 
-        std::ifstream file(filename);
+        ifstream file(filename);
         if (!file) {
-            throw std::runtime_error("Bad file name or file not found!");
+            throw runtime_error("Bad file name!");
         }
 
         for (int i = 0; i < 6; ++i) {
-            std::string line;
-            if (!std::getline(file, line)) {
+            string line;
+            if (!getline(file, line)) {
                 file.close(); // Close the file
-                throw std::runtime_error("File is too short or has incorrect format!");
+                throw runtime_error("File is too short or has incorrect format!");
             }
 
             size_t pos = line.find(' ');
-            if (pos == std::string::npos) {
+            if (pos == string::npos) {
                 file.close(); // Close the file
-                throw std::runtime_error("Bad file format!");
+                throw runtime_error("Bad file format!");
             }
 
-            m_badWords[i] = line.substr(0, pos);
-            m_goodWords[i] = line.substr(pos + 1);
+            m_badWords[i] = trim(line.substr(0, pos));
+            m_goodWords[i] = trim(line.substr(pos + 1));
         }
 
         file.close(); // Close the file
     }
 
-    void SpellChecker::operator()(std::string& text) const {
+    void SpellChecker::operator()(string& text) const {
         for (int i = 0; i < 6; ++i) {
             size_t found = text.find(m_badWords[i]);
             int count = 0;
-            while (found != std::string::npos) {
+            while (found != string::npos) {
                 text.replace(found, m_badWords[i].size(), m_goodWords[i]);
                 found = text.find(m_badWords[i], found + m_goodWords[i].size());
                 ++count;

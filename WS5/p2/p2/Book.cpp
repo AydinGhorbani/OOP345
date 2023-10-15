@@ -87,7 +87,7 @@ namespace sdds {
 
     void Book::fixSpelling(SpellChecker& spellChecker) const {
         // Call the SpellChecker operator() on the title and description
-        spellChecker(const_cast<std::string&>(m_title));
+        //spellChecker(const_cast<std::string&>(m_title));
         spellChecker(const_cast<std::string&>(m_description));
     }
 

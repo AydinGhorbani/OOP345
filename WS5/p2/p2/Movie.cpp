@@ -37,9 +37,9 @@ void Movie::fixSpelling(SpellChecker& spellChecker) const {
 }
 
     std::ostream& operator<<(std::ostream& os, const Movie& movie) {
-        os << std::setw(40) << movie.m_title << " | ";
+        os << std::right << std::setw(40) << movie.m_title << " | ";
         os << std::setw(4) << movie.m_year << " | ";
-        os << movie.m_description;
+        os << std::left<< std:: setw(50)<< movie.m_description << std::endl;
         return os;
     }
 }
