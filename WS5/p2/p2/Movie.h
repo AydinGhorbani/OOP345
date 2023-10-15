@@ -1,12 +1,24 @@
-//
-//  Movie.h
-//  p2
-//
-//  Created by aydin ghorbani on 2023-10-14.
-//
+#ifndef SDDS_MOVIE_H
+#define SDDS_MOVIE_H
 
-#ifndef Movie_h
-#define Movie_h
+#include <string>
+#include <iostream>
+#include <iomanip>
+#include "SpellChecker.h"
+#include "Collection.h"
 
+namespace sdds {
+    class Movie {
+        std::string m_title;
+        size_t m_year;
+        std::string m_description;
 
-#endif /* Movie_h */
+    public:
+        Movie();
+        Movie(std::string& strMovie);
+        const std::string& title() const;
+        void fixSpelling(SpellChecker& spellChecker) const ;
+        friend std::ostream& operator<<(std::ostream& os, const Movie& movie);
+    };
+}
+#endif

@@ -13,6 +13,7 @@
 #include "Book.h"
 
 using namespace std;
+
 namespace sdds {
 
     Book::Book() : m_year(0), m_price(0.0) {}
@@ -103,6 +104,13 @@ Book::Book(const string& strBook) : m_year(0), m_price(0.0) {
     void Book::setPrice(double price) {
         m_price = price;
     }
+
+void Book::fixSpelling(SpellChecker& spellChecker) const{
+        // Call the SpellChecker operator() on the title and description
+        spellChecker(const_cast<std::string&>(m_title));
+        spellChecker(const_cast<std::string&>(m_description));
+    }
+
 
 
     // Friend helper to overload the insertion operator

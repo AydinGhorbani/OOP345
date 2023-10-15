@@ -1,12 +1,19 @@
-//
-//  SpellChecker.h
-//  p2
-//
-//  Created by aydin ghorbani on 2023-10-14.
-//
+#ifndef SDDS_SPELLCHECKER_H
+#define SDDS_SPELLCHECKER_H
 
-#ifndef SpellChecker_h
-#define SpellChecker_h
+#include <string>
+#include "Collection.h"
 
+namespace sdds {
+    class SpellChecker {
+        std::string m_badWords[6];
+        std::string m_goodWords[6];
+    public:
+ 
+        SpellChecker(const char* filename);
+        void operator()(std::string& text)const;
+        void showStatistics(std::ostream& os) const;
+    };
+}
 
-#endif /* SpellChecker_h */
+#endif 
