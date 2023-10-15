@@ -4,18 +4,29 @@ namespace sdds {
     Movie::Movie() : m_year(0) {}
 
     Movie::Movie(std::string& strMovie){
-        size_t start = 0;
-        size_t end = strMovie.find(',');
-        m_title = strMovie.substr(start, end - start);
-        start = end + 1;
-        end = strMovie.find(',', start);
-        m_year = std::stoul(strMovie.substr(start, end - start));
-        start = end + 1;
-        m_description = strMovie.substr(start);
+
+        std::istringstream iss(strMovie);
+        std::string token;
+
+        std::getline(iss, token, ',');
+        m_title = trim(token);
+        
+        std::getline(iss, token, ',');
+        m_year = stoi(trim(token));
+
+        std::getline(iss, token);
+        m_description = trim(token);
+
     }
 
     const std::string& Movie::title() const {
         return m_title;
+    }
+
+    std::string Movie::trim(std::string str) {
+        std::string result = str.erase(0, str.find_first_not_of(" "));
+        result = result.substr(0, result.find_last_not_of(" ") + 1);
+        return result;
     }
 
  

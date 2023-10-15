@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include "SpellChecker.h"
 #include "Collection.h"
 
@@ -18,6 +19,7 @@ namespace sdds {
         Movie(std::string& strMovie);
         const std::string& title() const;
         void fixSpelling(SpellChecker& spellChecker) const ;
+        std::string trim(std::string str);
         friend std::ostream& operator<<(std::ostream& os, const Movie& movie);
     };
 }

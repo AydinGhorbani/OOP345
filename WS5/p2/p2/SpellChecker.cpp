@@ -10,7 +10,7 @@ int m_counts[] = {0};
         os << "Spellchecker Statistics" << std::endl;
         if (m_counts[0] == 5) m_counts[0] -= 1;
         for (int i = 0; i < 6; ++i) {
-            os << std::setw(15) << m_badWords[i] << ": " << m_counts[i] << " replacements" << std::endl;
+            os << std::right <<  std::setw(15) << m_badWords[i] << ": " << m_counts[i] << " replacements" << std::endl;
         }
     }
 
