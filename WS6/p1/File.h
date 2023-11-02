@@ -5,8 +5,8 @@
 //  Created by aydin ghorbani on 2023-11-02.
 //
 
-#ifndef File__h
-#define File__h
+#ifndef SDDS_FILE_H
+#define SDDS_FILE_H
 
 
-#endif /* File__h */
+#endif /* SDDS_FILE_H */
