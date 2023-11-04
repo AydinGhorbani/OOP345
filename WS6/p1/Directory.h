@@ -1,12 +1,34 @@
-//
-//  Directory.h
-//  p1
-//
-//  Created by aydin ghorbani on 2023-11-02.
-//
+#ifndef SDDS_DIRECTORY_H
+#define SDDS_DIRECTORY_H
 
-#ifndef Directory_h
-#define Directory_h
+#include "Resource.h"
+#include <vector>
+#include <string>
+
+namespace sdds {
+    class Directory : public Resource {
+        std::vector<Resource*> m_contents;
+
+    public:
+        Directory(const std::string& name);
+        void update_parent_path(const std::string& path) override;
+        NodeType type() const override;
+        std::string path() const override;
+        std::string name() const override;
+        int count() const override;
+        size_t size() const override;
+        Directory& operator+=(Resource* resource);
+        Resource* find(const std::string& name, const std::vector<OpFlags>& flags = {});
+        ~Directory();
+        
+        // Disable copy/move operations
+        Directory(const Directory&) = delete;
+        Directory& operator=(const Directory&) = delete;
+        Directory(Directory&&) = delete;
+        Directory& operator=(Directory&&) = delete;
+    };
+}
 
 
-#endif /* Directory_h */
+
+#endif // DIRECTORY_H
