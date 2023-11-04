@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "Directory.h"
 
 namespace sdds {
@@ -8,7 +9,7 @@ namespace sdds {
     void Directory::update_parent_path(const std::string& path) {
         m_parent_path = path;
         for (Resource* resource : m_contents) {
-            resource->update_parent_path(path + m_name + "/");
+            resource->update_parent_path(path + m_name);
         }
     }
 
@@ -56,8 +57,8 @@ namespace sdds {
             }
         }
 
-        // If the RECURSIVE flag is set, attempt to find the resource in subdirectories
-        if (std::find(flags.begin(), flags.end(), OpFlags::RECURSIVE) != flags.end()) {
+        // If the RECURSIVE flag is set attempt to find the resource in subdirectories
+        if (std::find(flags.begin(), flags.end(), sdds::OpFlags::RECURSIVE) != flags.end()){
             for (Resource* resource : m_contents) {
                 if (resource->type() == NodeType::DIR) {
                     Directory* subDirectory = dynamic_cast<Directory*>(resource);
