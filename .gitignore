@@ -7,6 +7,7 @@ project.xcworkspace/
 xcuserdata/
 *.xcworkspace/
 *.xcodeproj/
+*.ws
 
 # C++
 # Ignore compiled binary files and build artifacts
