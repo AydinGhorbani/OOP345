@@ -1,3 +1,14 @@
+/*
+ ****************************************
+ Full Name  : Aydin Ghorbani
+ Student ID#: 124170226
+ Email      : aghorbani8@myseneca.ca
+ 
+ 
+ I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+ The parts that i searched or got help to do are mentioned.
+ ****************************************
+ */
 #include <algorithm>
 #include <iomanip>
 #include "Directory.h"
@@ -116,7 +127,7 @@ void Directory::display(std::ostream& os, const std::vector<FormatFlags>& flags)
         if (longFlag)
         {
             os << "  " << std::setw(2) << (res->type() == NodeType::DIR ? std::to_string(res->count()) : "") << "|";
-            os << std::setw(5) << std::right << res->size() << " bytes |" << std::endl;
+            os << std::setw(5) << std::right << res->size() << " bytes | " << std::endl;
         }
         else
         {
