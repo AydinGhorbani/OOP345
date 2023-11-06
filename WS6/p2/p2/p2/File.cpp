@@ -2,8 +2,9 @@
 #include "Flags.h"
 
 namespace sdds {
-    File::File(const std::string& name, const std::string& contents) : m_contents(contents) {
+    File::File(const std::string& name, const std::string& contents){
         m_name = name;
+        m_contents = contents;
     }
 
     void File::update_parent_path(const std::string& parentPath) {

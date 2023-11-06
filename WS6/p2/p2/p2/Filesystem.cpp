@@ -1,100 +1,126 @@
-//
-//  Filesystem.cpp
-//  p2
-//
-//  Created by aydin ghorbani on 2023-11-04.
-//
-
-// Filesystem.cpp
-#include "Filesystem.h"
-#include "File.h"
-#include "Flags.h"
-#include <fstream>
-#include <sstream>
 #include <vector>
+#include <string>
+#include <fstream>
+#include "Filesystem.h"
+#include "Directory.h"
+#include "File.h"
 
-namespace sdds {
-Filesystem::Filesystem(const std::string& filename, const std::string& rootDirectoryName) {
-    m_root = new Directory(rootDirectoryName);
-    m_current = m_root;
 
-    std::ifstream file(filename);
-    if (!file) {
-        throw std::invalid_argument("Filesystem not created with an invalid filename.");
+namespace sdds
+{
+    void Filesystem::addSrc(std::string& path, const std::string& content)
+    {
+        bool flag  = false;
+        Directory* current = m_root;
+        do
+        {
+            flag = path.find("/") == std::string::npos;
+            if (!flag )
+            {
+                std::string dirName = path.substr(0, path.find("/") + 1);
+                Directory* newDir = nullptr;
+                path = path.substr(path.find("/") + 1);
+                newDir = dynamic_cast<Directory*>(m_root->find(dirName));
+                if (!newDir)
+                {
+                    newDir = new Directory(dirName);
+                    *current += newDir;
+                }
+                current = newDir;
+            }
+            else if(content.length() && !m_root->find(path))
+            {
+                *current += new File(path.c_str(), content.c_str());
+            }
+        } while (!flag );
+    }
+    Filesystem::Filesystem(const char* fileName, const std::string& rootName)
+    {
+        m_root = new Directory(rootName);
+        m_current = m_root;
+
+        std::fstream file(fileName);
+        if (file)
+        {
+            std::string line{};
+            do
+            {
+                bool isFile{};
+                getline(file, line);
+                isFile = line.find('|') != std::string::npos;
+                if (isFile)
+                {   //toknized trimming
+                    std::string path = line.substr(0, line.find('|'));
+                    trimString(path);
+                    std::string contents = line.substr(line.find('|') + 1);
+                    trimString(contents);
+                    addSrc(path, contents);
+                }
+                else
+                {
+                    trimString(line);
+                    addSrc(line);
+                }
+
+            } while (file);
+        }
+        else
+        {
+            delete m_root;
+            throw "ERROR READING FILE";
+        }
     }
 
-    std::string line;
-    while (std::getline(file, line)) {
-        std::string resourcePath = tokenizeAndTrim(line);
-        std::string resourceContents;
-
-        size_t pipePos = resourcePath.find('|');
-        if (pipePos != std::string::npos) {
-            resourceContents = tokenizeAndTrim(resourcePath.substr(pipePos + 1));
-            resourcePath = tokenizeAndTrim(resourcePath.substr(0, pipePos));
-        }
-
-        if (!resourcePath.empty()) {
-            createDirectoryTree(resourcePath);
-            if (!resourceContents.empty()) {
-                *m_current += new File(resourcePath, resourceContents);
+    Filesystem& Filesystem::operator+=(Resource* res)
+    {
+        *m_current += res;
+        return *this;
+    }
+    Directory* Filesystem::change_directory(const std::string& dirName)
+    {
+        if (dirName.length())
+        {
+            Resource* targetDir = m_root->find(dirName, std::vector<OpFlags>{OpFlags::RECURSIVE});
+            if (targetDir && targetDir->type() == NodeType::DIR)
+            {
+                m_current = dynamic_cast<Directory*>(targetDir);
+            }
+            else
+            {
+                throw std::invalid_argument("Cannot change directory! " + dirName + " not found!");
             }
         }
-    }
-}
-
-Filesystem::~Filesystem() {
-    delete m_root;
-}
-
-Filesystem& Filesystem::operator+=(Resource* resource) {
-    *m_current += resource;
-    return *this;
-}
-
-Directory* Filesystem::change_directory(const std::string& dirName) {
-    Directory* newDir = dynamic_cast<Directory*>(m_current->find(dirName));
-
-    if (!newDir) {
-        throw std::invalid_argument("Directory not found: " + dirName);
-    }
-
-    m_current = newDir;
-    return m_current;
-}
-
-
-Directory* Filesystem::get_current_directory() const {
-    return m_current;
-}
-
-
-std::string Filesystem::tokenizeAndTrim(const std::string& str) {
-    size_t firstNonSpace = str.find_first_not_of(" ");
-    size_t lastNonSpace = str.find_last_not_of(" ");
-
-    if (firstNonSpace == std::string::npos) {
-        return "";
-    }
-
-    return str.substr(firstNonSpace, lastNonSpace - firstNonSpace + '/');
-}
-
-
-Directory* Filesystem::createDirectoryTree(const std::string& path) {
-    std::istringstream ss(path);
-    std::string directoryName;
-    Directory* currentDir = m_root;
-
-    while (std::getline(ss, directoryName, '/')) {
-        Directory* subDir = dynamic_cast<Directory*>(currentDir->find(directoryName));
-        if (!subDir) {
-            subDir = new Directory(directoryName);
-            *currentDir += subDir;
+        else
+        {
+            m_current = m_root;
         }
-        currentDir = subDir;
+        return m_current;
     }
-    return currentDir;
-}
 
+    Directory* Filesystem::get_current_directory() const
+    {
+        return m_current;
+    }
+
+    void trimString(std::string& source)
+    {
+        size_t begin = source.find_first_not_of(" ");
+        size_t end = source.find_last_not_of(" ");
+        std::string res{};
+        if (begin != std::string::npos && end != std::string::npos)
+        {
+            res = source.substr(begin, end - begin + 1);
+        }
+        else
+        {
+            res = "";
+        }
+        source = res;
+    }
+
+    Filesystem::~Filesystem()
+    {
+        delete m_root;
+        m_current = nullptr;
+    }
 }

@@ -39,7 +39,7 @@ namespace sdds {
     }
 
     Directory& Directory::operator+=(Resource* resource) {
-        // Check for existing resources with the same name
+        
         Resource* existingResource = find(resource->name());
 
         if (existingResource) {
@@ -81,32 +81,48 @@ namespace sdds {
             delete resource;
         }
     }
-
-void Directory::remove(const std::string& name, const std::vector<OpFlags>& flags) {
-        Resource* resource = find(name);
-
-        if (!resource) {
-            throw std::invalid_argument(name + " does not exist in " + m_name);
-        }
-
-        if (resource->type() == NodeType::DIR) {
-            if (std::find(flags.begin(), flags.end(), OpFlags::RECURSIVE) == flags.end()) {
-                throw std::invalid_argument(name + " is a directory. Pass the recursive flag to delete directories.");
-            }
-        }
-
-        m_contents.erase(std::remove(m_contents.begin(), m_contents.end(), resource), m_contents.end());
-        delete resource;
+void Directory::remove(const std::string& name, const std::vector<OpFlags>& flags)
+{
+    bool recursive = std::find(flags.begin(), flags.end(), OpFlags::RECURSIVE) != flags.end();
+    
+    Resource* result = find(name, flags);
+    if (!result)
+    {
+        throw std::invalid_argument(name + " does not exist in " + m_parent_path);
     }
+    
+    size_t resultIndex = std::distance(m_contents.begin(), std::find(m_contents.begin(), m_contents.end(), result));
+    
+    if (result->type() == NodeType::DIR && !recursive)
+    {
+        throw std::invalid_argument(name + " is a directory. Pass the recursive flag to delete directories.");
+    }
+    
+    delete result;
+    m_contents.erase(m_contents.begin() + resultIndex);
+}
 
-void Directory::display(std::ostream& os, const std::vector<FormatFlags>& formatFlags) const {
-        os << "Total size: " << size() << " bytes" << std::endl;
-        for (const auto& resource : m_contents) {
-            os << (resource->type() == NodeType::DIR ? "D" : "F") << " | " << std::left << std::setw(15) << resource->name();
-            if (std::find(formatFlags.begin(), formatFlags.end(), FormatFlags::LONG) != formatFlags.end()) {
-                os << " | " << std::setw(2) << resource->count() << " | " << std::setw(10) << resource->size() << " bytes";
-            }
+void Directory::display(std::ostream& os, const std::vector<FormatFlags>& flags) const
+{
+    bool longFlag = std::find(flags.begin(), flags.end(), FormatFlags::LONG) != flags.end();
+    
+    os << "Total size: " << std::setw(2) << size() << " bytes\n";
+    
+    for (const auto& res : m_contents)
+    {
+        os << (res->type() == NodeType::FILE ? "F | " : "D | ");
+        os << std::setw(15) << std::left << res->name() << " |";
+        
+        if (longFlag)
+        {
+            os << "  " << std::setw(2) << (res->type() == NodeType::DIR ? std::to_string(res->count()) : "") << "|";
+            os << std::setw(5) << std::right << res->size() << " bytes |" << std::endl;
+        }
+        else
+        {
             os << std::endl;
         }
     }
+}
+
 }
