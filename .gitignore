@@ -39,15 +39,5 @@ xcuserdata/
 *.user
 *.suo
 *.sln.docstates
-.DS_Store
-WS5/.DS_Store
-WS1/.DS_Store
-WS3/.DS_Store
-.DS_Store
-WS4/.DS_Store
-WS4/.DS_Store
-.DS_Store
-WS5/.DS_Store
-.DS_Store
-WS6/p1/ws
-WS6/p1/ws.dSYM/Contents/Resources/DWARF/ws
+*.DS_Store
+
