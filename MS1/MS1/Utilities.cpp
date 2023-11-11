@@ -28,30 +28,29 @@ namespace sdds {
         return m_delimiter;
     }
 
-std::string Utilities::extractToken(const std::string& str, size_t& next_pos, bool& more) {
-    std::string token;
-    if (next_pos < str.length()) {
-        size_t delimiterPos = str.find(m_delimiter, next_pos);
-        if (delimiterPos != std::string::npos) {
-            token = str.substr(next_pos, delimiterPos - next_pos);
-            next_pos = delimiterPos + 1;
+    std::string Utilities::extractToken(const std::string& str, size_t& next_pos, bool& more) {
+
+        std::string token;
+        size_t first_pos = next_pos;
+        next_pos = str.find(m_delimiter, first_pos);
+
+        if (first_pos == next_pos) {
+            more = false;
         }
-        else {
-            token = str.substr(next_pos);
-            next_pos = str.length();
+        else if (next_pos != std::string::npos) {
+            token = str.substr(first_pos, next_pos - first_pos);
+
+            m_widthField = std::max(token.length(), m_widthField);
+            more = true;
         }
-        // Trim leading and trailing spaces
-        while (!token.empty() && token[0] == ' ')
-            token.erase(0, 1);
-        while (!token.empty() && token[token.length() - 1] == ' ')
-            token.erase(token.length() - 1, 1);
-        if (!token.empty() && m_widthField < token.length())
-            m_widthField = token.length();
+        else if (next_pos == std::string::npos) {
+            token = str.substr(first_pos);
+            m_widthField = std::max(token.length(), m_widthField);
+            more = false;
+        }
+        next_pos++;
+        return token;
     }
-    else {
-        more = false;
-    }
-    return token;
-}
+
 
 }
