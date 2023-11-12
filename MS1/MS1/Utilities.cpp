@@ -1,10 +1,15 @@
-//
-//  Utilities.cpp
-//  MS1
-//
-//  Created by aydin ghorbani on 2023-11-08.
-//
-
+/*
+ ****************************************
+ Full Name  : Aydin Ghorbani
+ Student ID#: 124170226
+ Email      : aghorbani8@myseneca.ca
+ Date       : 11/11/23
+ 
+ I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+ The parts that i searched or got help to do are mentioned.
+ ****************************************
+ */
+#include <iostream>
 #include "Utilities.h"
 
 namespace sdds {
@@ -29,28 +34,36 @@ namespace sdds {
     }
 
     std::string Utilities::extractToken(const std::string& str, size_t& next_pos, bool& more) {
-
         std::string token;
-        size_t first_pos = next_pos;
-        next_pos = str.find(m_delimiter, first_pos);
+        size_t delimiterPos = str.find(m_delimiter, next_pos);
 
-        if (first_pos == next_pos) {
-            more = false;
+        if (delimiterPos != std::string::npos) {
+            token = str.substr(next_pos, delimiterPos - next_pos);
+            next_pos = delimiterPos + 1;
+        } else {
+            token = str.substr(next_pos);
+            next_pos = str.length();
         }
-        else if (next_pos != std::string::npos) {
-            token = str.substr(first_pos, next_pos - first_pos);
+        m_widthField = std::max(token.length(), m_widthField);
 
-            m_widthField = std::max(token.length(), m_widthField);
-            more = true;
-        }
-        else if (next_pos == std::string::npos) {
-            token = str.substr(first_pos);
-            m_widthField = std::max(token.length(), m_widthField);
+        more = (next_pos < str.length());
+        token = trim(token);
+        
+        if (token.empty() || token.find_first_not_of(' ') == std::string::npos) {
             more = false;
+            throw std::string("ERROR: No token.");
         }
-        next_pos++;
+
+
         return token;
     }
 
-
+    std::string Utilities::trim(const std::string& str) {
+        size_t first = str.find_first_not_of(' ');
+        if (std::string::npos == first) {
+            return str;
+        }
+        size_t last = str.find_last_not_of(' ');
+        return str.substr(first, (last - first + 1));
+    }
 }
