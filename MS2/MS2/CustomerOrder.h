@@ -1,4 +1,3 @@
-
 #ifndef CUSTOMER_ORDER_H
 #define CUSTOMER_ORDER_H
 
@@ -18,18 +17,17 @@ namespace sdds {
             Item(const std::string& src) : m_itemName(src) {};
         };
 
-        std::string m_name;
-        std::string m_product;
-        size_t m_cntItem;
-        Item** m_lstItem;
+        std::string m_name {};
+        std::string m_product {};
+        size_t m_cntItem = 0;
+        Item** m_lstItem {};
         static size_t m_widthField;
 
     public:
         // Constructors and Rule of Three
         CustomerOrder();
-        CustomerOrder(const std::string& record);
         CustomerOrder(const CustomerOrder& other);
-        
+        CustomerOrder(const std::string& record);
         CustomerOrder& operator=(const CustomerOrder& other);
         CustomerOrder(CustomerOrder&& other) noexcept;
         CustomerOrder& operator=(CustomerOrder&& other) noexcept;
@@ -43,8 +41,6 @@ namespace sdds {
         void display(std::ostream& os) const;
 
         static void setWidthField(size_t width);
-
-
     };
 
 }

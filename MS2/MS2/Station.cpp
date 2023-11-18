@@ -23,36 +23,9 @@ namespace sdds {
         size_t next_pos = 0;
         bool more = true;
 
-//         //Debug output
-//        std::cout << "Record: " << record << std::endl;
-
         m_itemName = util.extractToken(record, next_pos, more);
-
-//        // Debug output
-//        std::cout << "Item Name: " << m_itemName << std::endl;
-
-        // Attempt to convert the serial number to size_t
-        try {
-            m_serialNumber = std::stoul(util.extractToken(record, next_pos, more));
-        } catch (const std::invalid_argument& e) {
-            std::cerr << "Error converting serial number for item '" << m_itemName << "': " << e.what() << std::endl;
-            return; // Exit the constructor if there's an error
-        }
-
-        // Debug output
-//        std::cout << "Serial Number: " << m_serialNumber << std::endl;
-
-        // Attempt to convert the quantity to size_t
-        try {
-            m_quantity = std::stoul(util.extractToken(record, next_pos, more));
-        } catch (const std::invalid_argument& e) {
-            std::cerr << "Error converting quantity for item '" << m_itemName << "': " << e.what() << std::endl;
-            return; // Exit the constructor if there's an error
-        }
-
-//        // Debug output
-//        std::cout << "Quantity: " << m_quantity << std::endl;
-
+        m_serialNumber = std::stoul(util.extractToken(record, next_pos, more));
+        m_quantity = std::stoul(util.extractToken(record, next_pos, more));
         m_description = util.extractToken(record, next_pos, more);
 
         if (m_widthField < util.getFieldWidth())
@@ -80,11 +53,11 @@ namespace sdds {
     }
 
     void Station::display(std::ostream& os, bool full) const {
-        os << std::setw(3) << std::right << std::setfill('0') << m_id << std::setfill(' ') << " | ";
-        os << std::left << std::setw(m_widthField - 16) << m_itemName << "| " << std::setw(6) << std::setfill('0') << std::right << m_serialNumber << " | ";
+        os <<std::setw(3) << std::right << std::setfill('0') << m_id << std::setfill(' ')<< " | ";
+        os << std::left << std::setw(m_widthField - 16) << m_itemName << "| " << std::setw(6)<< std::setfill('0') << std::right << m_serialNumber << " | ";
 
         if (full) {
-            os << std::setfill(' ') << std::setw(4) << std::right << m_quantity << " | " << m_description;
+            os << std::setfill(' ') << std::setw(4) << std::right <<m_quantity<< " | " << m_description;
         }
 
         os << std::endl;
