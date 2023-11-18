@@ -1,9 +1,10 @@
+
 #ifndef CUSTOMER_ORDER_H
 #define CUSTOMER_ORDER_H
 
 #include <iostream>
 #include <string>
-#include "Station.h"  // Assuming the existence of the Station class
+#include "Station.h"
 #include "Utilities.h"
 
 namespace sdds {
@@ -27,21 +28,25 @@ namespace sdds {
         // Constructors and Rule of Three
         CustomerOrder();
         CustomerOrder(const std::string& record);
+        CustomerOrder(const CustomerOrder& other);
+        
+        CustomerOrder& operator=(const CustomerOrder& other);
         CustomerOrder(CustomerOrder&& other) noexcept;
         CustomerOrder& operator=(CustomerOrder&& other) noexcept;
         ~CustomerOrder();
-
+        
         // Member functions
+        void clearMemory();
         bool isOrderFilled() const;
         bool isItemFilled(const std::string& itemName) const;
         void fillItem(Station& station, std::ostream& os);
         void display(std::ostream& os) const;
 
-        // Static member function
         static void setWidthField(size_t width);
+
 
     };
 
-}  // namespace sdds
+}
 
-#endif // CUSTOMER_ORDER_H
+#endif
