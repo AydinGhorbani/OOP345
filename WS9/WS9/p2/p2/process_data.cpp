@@ -94,21 +94,15 @@ ProcessData::operator bool() const {
 
 int ProcessData::operator()(const std::string& target_filename, double& avg, double& var) {
     try {
-        // Create a vector to hold threads
         std::vector<std::thread> threads;
-
-        // Specify the number of partitions (adjust as needed)
         const int num_partitions = num_threads;
 
-        // Vector to hold average results from each partition
         std::vector<double> avg_results(num_partitions, 0.0);
-
-        // Vector to hold variance results from each partition
         std::vector<double> var_results(num_partitions, 0.0);
-
-        // Mutex for synchronization
+        
         std::mutex mutex;
-        // Launch threads to compute average and variance for each partition
+        
+        // launch threads to compute average and variance for each partition
         for (int i = 0; i < num_partitions; ++i) {
             threads.emplace_back([this, i, &avg_results, &var_results, &mutex]() {
                 double local_avg = 0.0;
@@ -119,19 +113,18 @@ int ProcessData::operator()(const std::string& target_filename, double& avg, dou
                     local_var += data[j] * data[j];
                 }
 
-                // Lock the mutex before updating shared data
+                // lock the mutex before updating shared data
                 std::lock_guard<std::mutex> lock(mutex);
                 avg_results[i] = local_avg;
                 var_results[i] = local_var;
             });
         }
 
-        // Join threads
+        // join threads
         for (auto& thread : threads) {
             thread.join();
         }
 
-        // Calculate total average and variance from partition results
         double sum_avg = 0.0;
         double sum_var = 0.0;
 
@@ -143,15 +136,14 @@ int ProcessData::operator()(const std::string& target_filename, double& avg, dou
         avg = sum_avg / total_items;
         var = (sum_var - total_items * avg * avg) / total_items;
 
-        // Rest of the code to write to the target file and set avg and var
 
-        return 0; // Success
+        return 0;
     } catch (const std::string& msg) {
         std::cerr << "Error: " << msg << std::endl;
-        return -1; // Failure
+        return -1;
     } catch (...) {
         std::cerr << "Error: Something went wrong!" << std::endl;
-        return -1; // Failure
+        return -1;
     }
 }
 }
