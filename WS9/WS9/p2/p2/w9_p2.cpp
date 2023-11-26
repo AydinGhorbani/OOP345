@@ -33,30 +33,47 @@ int main(int argc, char** argv)
 	std::cout << "--------------------------\n\n";
 
 	std::string fname_source, fname_target;
+
 	if (argc > 1)
 		fname_source = argv[1];
 	if (argc > 2)
 		fname_target = argv[2];
-q
-	// The following code block creates function object pd_obj. fname_source is supplied to the
-	//   constructor, which reads number-of-data-items and the data items from the file and 
-	//   copies to instance variables. The constructor stores data items in a resource array, and 
-	//   prints some data items on the standard output. Invocation of the function object pd_obj 
-	//   calls the global functions computeAvgFactor and computeVarFactor to compute average and 
-	//   variance of the data stored in the resource arrry, and saves the same data into the file 
-	//   fname_target supplied as argument. avg and var are passed by reference, so they carry 
-	//   the average and variance after the invocation of the function object.
+	
+	size_t thCnt[]{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; // number of threads to be used to process the input file.
 
-		printHead("Average and variance of record-values using a functor.");
+	/* 
+	The following code block creates function object pd_obj for the computation of average and
+	   variance through thCnt[?] thread(s). During the function object creation, number of data 
+	   items and the values of the data items are read and stored in instance variables. In 
+	   addition to the filename fname_source, the constructor also receives the number of threads
+	   as the second argument, which is also stored in the instance variable. Some of the 
+	   read data items are also printed on standard output. It also initializes additional resource 
+	   variables related to the implementation of multi threading. 
+	 Invocation of the function object pd_obj divides the data into a number of parts, where 
+	   the number of parts is equal to the number of threads. Multi-threading is used to compute 
+	   average-factor for each part of he data by calling the function computeAvgFactor. The 
+	   obtained average-factors are added to compute total average. Computed total average is 
+	   used as argument for computeVarFactor, which is used compute variance-factors for each part of the 
+	   data; multi-threading is for this as well. The computed variance-factors are added to 
+	   obtain total variance.
+	 Arguments avg and var are passed by reference, so they carry the average and variance computed 
+	   after the invocation of function object. 
+	 Invocation of the function object pd_obj also saves the data into the file fname_target 
+	   supplied as argument. 
+	 Read the comments included in the implementation file process_data.cpp. 
+	 */
+	for (auto noOfThreads : thCnt)
+	{
+		printHead("Average and variance of record-values using " + std::to_string(noOfThreads)  + " thread(s).");
 		std::chrono::steady_clock::time_point t_before, t_after;
 
-		sdds::ProcessData pd_obj(fname_source); // creates function object 
+		sdds::ProcessData pd_obj(fname_source, noOfThreads); // creates function object 
 		if (pd_obj) {
 			try {
 				double avg = 0.0, var = 0.0;
 
 				t_before = std::chrono::steady_clock::now();
-				pd_obj(fname_target, avg, var); // invokes function object for input files last two parameters are outputs
+				pd_obj(fname_target, avg, var); // invokes function object for input files, last two parameters are output parametes
 				t_after = std::chrono::steady_clock::now();
 
 				// sanity check
@@ -79,6 +96,7 @@ q
 			}
 		}
 		printFoot();
+	}
 	
 	return cout;
 }
