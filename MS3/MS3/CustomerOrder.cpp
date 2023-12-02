@@ -113,8 +113,10 @@ bool CustomerOrder::isItemFilled(const std::string& itemName) const {
 
     // Fill an item in the order using a station
 void CustomerOrder::fillItem(Station& station, std::ostream& os) {
+    os << "Trying to fill item: " << m_name << ", " << m_product << " [" << getItemName() << "]" << std::endl;
     for (size_t i = 0; i < m_cntItem; ++++i) {
         if (!m_lstItem[i]->m_isFilled && station.getItemName() == m_lstItem[i]->m_itemName) {
+            os << "Found a match with station: " << station.getItemName() << std::endl;
             if (station.getQuantity() > 0) {
                 m_lstItem[i]->m_serialNumber = station.getNextSerialNumber();
                 m_lstItem[i]->m_isFilled = true;

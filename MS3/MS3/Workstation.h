@@ -24,6 +24,7 @@ namespace sdds {
         virtual void display(std::ostream& os, bool full) const;
         Workstation& operator-=(CustomerOrder&& order);
         Workstation& operator+=(CustomerOrder&& newOrder);
+        virtual ~Workstation() = default;
 
     };
 }

@@ -19,14 +19,16 @@ namespace sdds {
         }
     }
 
-    bool Workstation::moveOrder() {
-        if (!m_orders.empty() && m_orders.front().isItemFilled(getItemName())) {
-            *m_pNextStation += std::move(m_orders.front());
+bool Workstation::moveOrder() {
+    if (!m_orders.empty() && m_orders.front().isItemFilled(getItemName())) {
+        if (m_pNextStation) {
+            *(m_pNextStation) += std::move(m_orders.front());
             m_orders.pop_front();
             return true;
         }
-        return false;
     }
+    return false;
+}
 
     void Workstation::setNextStation(Workstation* station) {
         m_pNextStation = station;

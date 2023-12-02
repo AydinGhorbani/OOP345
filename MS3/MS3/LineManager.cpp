@@ -5,6 +5,7 @@
 namespace sdds {
     LineManager::LineManager(const std::string& filename, const std::vector<Workstation*>& stations) {
         // Load connections between workstations from file
+        m_stations = stations;
         std::ifstream file(filename);
         if (!file)
             throw std::string("Unable to open [") + filename + "] file.";
@@ -44,37 +45,41 @@ namespace sdds {
         }
 
         // Copy all stations to activeLine
-        for (auto* station : stations)
-            activeLine.push_back(station);
+        activeLine = stations;
 
         file.close();
     }
+bool LineManager::run(std::ostream& os) {
+    os << "Line Manager Iteration: " << m_cntCustomerOrder + 1 << std::endl;
 
-    bool LineManager::run(std::ostream& os) {
-        os << "Line Manager Iteration: " << m_cntCustomerOrder + 1 << std::endl;
+    if (!m_firstStation || m_cntCustomerOrder >= activeLine.size())
+        return true;  // All orders processed
 
-        if (!m_firstStation || m_cntCustomerOrder >= activeLine.size())
-            return true;  // All orders processed
+    os << "Processing order for station: " << m_firstStation->getItemName() << std::endl;
 
-        *(m_firstStation) -= std::move(g_pending.front());
-        g_pending.pop_front();
+    // Add these lines for debugging
+    os << "Station Quantity Before Processing: " << m_firstStation->getQuantity() << std::endl;
+    os << "Order Item Name: " << g_pending.front().getItemName() << std::endl;
 
-        // Find the next station
-        size_t i = 0;
-        for (; i < activeLine.size() - 1; ++i) {
-            if (activeLine[i] == m_firstStation)
-                break;
-        }
+    m_firstStation->operator-=(std::move(g_pending.front()));
 
-        m_firstStation = activeLine[i + 1];
+    // Add this line for debugging
+    os << "Station Quantity After Processing: " << m_firstStation->getQuantity() << std::endl;
 
-        m_cntCustomerOrder++;
-        return false;  // Continue processing orders
+    auto it = std::find(activeLine.begin(), activeLine.end(), m_firstStation);
+    if (it != activeLine.end()) {
+        size_t index = std::distance(activeLine.begin(), it);
+        m_firstStation = (index + 1 < activeLine.size()) ? activeLine[index + 1] : nullptr;
     }
 
+    m_cntCustomerOrder++;
+    return false;  // Continue processing orders
+}
+
     void LineManager::display(std::ostream& os) const {
-        for (const auto* station : activeLine)
-            station->display(os, false);
+        for (const Workstation* station : m_stations) {
+            station->display(std::cout, true);
+        }
     }
 
     void LineManager::reorderStations() {
