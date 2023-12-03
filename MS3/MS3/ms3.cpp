@@ -96,6 +96,7 @@ int main(int argc, char** argv)
 		cout << "========================================" << endl;
 		cout << "=      Display Stations (ordered)      =" << endl;
 		cout << "========================================" << endl;
+        
 		lm.reorderStations();
 		lm.display(cout);
 		cout << endl << endl;

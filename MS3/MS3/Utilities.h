@@ -13,15 +13,15 @@
 #ifndef SDDS_UTILITIES_H
 #define SDDS_UTILITIES_H
 
+#include <vector>
 #include <string>
 
 namespace sdds {
+class CustomerOrder;
+
     class Utilities {
-        size_t m_widthField ;
-        static char m_delimiter ;
-        // private methode to trim the find_first_of spaces
-        // in Stations2.
-        std::string trim(const std::string& str);
+        size_t m_widthField;
+        static char m_delimiter;
     public:
         Utilities();
         void setFieldWidth(size_t newWidth);
@@ -29,7 +29,13 @@ namespace sdds {
         static void setDelimiter(char newDelimiter);
         static char getDelimiter();
         std::string extractToken(const std::string& str, size_t& next_pos, bool& more);
+        std::string trim(const std::string& str);
+        std::string getItemName() const;
+        //MS3 update
+        bool checkTokenCount(const std::string& record, size_t expectedCount) ;
     };
+    extern std::vector<CustomerOrder> g_pending;
+    extern std::vector<CustomerOrder> g_completed;
+    extern std::vector<CustomerOrder> g_incomplete;
 }
-
-#endif /*SDDS_UTILITIES_H*/
+#endif

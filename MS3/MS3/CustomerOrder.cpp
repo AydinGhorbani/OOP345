@@ -21,40 +21,51 @@ namespace sdds {
     CustomerOrder::CustomerOrder() : m_name(""), m_product(""), m_cntItem(0), m_lstItem(nullptr) {}
 
     // Constructor that parses the record and creates Order
-    CustomerOrder::CustomerOrder(const std::string& record) : m_name(""), m_product(""), m_cntItem(0), m_lstItem(nullptr) {
-        Utilities util;
-        bool more = true;
-        size_t next_pos = 0;
+CustomerOrder::CustomerOrder(const std::string& record) : m_name(""), m_product(""), m_cntItem(0), m_lstItem(nullptr) {
+    Utilities util;
+    bool more = true;
+    size_t next_pos = 0;
 
-        m_name = util.extractToken(record, next_pos, more);
-        m_product = util.extractToken(record, next_pos, more);
-        m_cntItem = 0;
+    // Print the entire record
+    std::cout << "Record: " << record << std::endl;
 
-        // Count the number of items in the record
-        while (more) {
-            util.extractToken(record, next_pos, more);
-            m_cntItem++;
-        }
+    // Extract the first two tokens separately
+    m_name = util.extractToken(record, next_pos, more);
+    std::cout << "Name: " << m_name << std::endl;
 
-        // Allocate memory for m_lstItem
-        m_lstItem = new Item*[m_cntItem];
+    m_product = util.extractToken(record, next_pos, more);
+    std::cout << "Product: " << m_product << std::endl;
 
-        // Reset the position for token extraction
-        next_pos = 0;
+    m_cntItem = 0;
 
-        // Extract the first two tokens separately
-        m_name = util.extractToken(record, next_pos, more);
-        m_product = util.extractToken(record, next_pos, more);
+    // Count the number of items in the record
+    while (more) {
+        std::string token = util.extractToken(record, next_pos, more);
+        std::cout << "Item Token: " << token << std::endl;
+        m_cntItem++;
+    }
 
-        // Initialize m_lstItem with items from the record
-        for (size_t i = 0; i < m_cntItem; ++i) {
-            util.setFieldWidth(m_widthField);
-            m_lstItem[i] = new Item(util.extractToken(record, next_pos, more));
-            if (m_widthField < util.getFieldWidth()) {
-                m_widthField = util.getFieldWidth();
-            }
+    // Allocate memory for m_lstItem
+    m_lstItem = new Item*[m_cntItem];
+
+    // Reset the position for token extraction
+    next_pos = 0;
+
+    // Extract the first two tokens separately
+    m_name = util.extractToken(record, next_pos, more);
+    m_product = util.extractToken(record, next_pos, more);
+
+    // Initialize m_lstItem with items from the record
+    for (size_t i = 0; i < m_cntItem; ++i) {
+        util.setFieldWidth(m_widthField);
+        std::string itemToken = util.extractToken(record, next_pos, more);
+        std::cout << "Item Token: " << itemToken << std::endl;
+        m_lstItem[i] = new Item(itemToken);
+        if (m_widthField < util.getFieldWidth()) {
+            m_widthField = util.getFieldWidth();
         }
     }
+}
 
 
     // Copy constructor (deleted)
@@ -113,10 +124,8 @@ bool CustomerOrder::isItemFilled(const std::string& itemName) const {
 
     // Fill an item in the order using a station
 void CustomerOrder::fillItem(Station& station, std::ostream& os) {
-    os << "Trying to fill item: " << m_name << ", " << m_product << " [" << getItemName() << "]" << std::endl;
     for (size_t i = 0; i < m_cntItem; ++++i) {
         if (!m_lstItem[i]->m_isFilled && station.getItemName() == m_lstItem[i]->m_itemName) {
-            os << "Found a match with station: " << station.getItemName() << std::endl;
             if (station.getQuantity() > 0) {
                 m_lstItem[i]->m_serialNumber = station.getNextSerialNumber();
                 m_lstItem[i]->m_isFilled = true;
@@ -169,9 +178,54 @@ void CustomerOrder::display(std::ostream& os) const {
         }
         delete[] m_lstItem;
     }
+std::ostream& operator<<(std::ostream& os, const CustomerOrder& order) {
+    os << order.getName() << " - " << order.getProduct() << std::endl;
 
-    std::string CustomerOrder::getItemName() const {
-        return (m_cntItem > 0) ? m_lstItem[0]->m_itemName : "";
+    size_t maxItemNameLength = 0;
+
+    // Find the maximum length of item names in the order
+    for (size_t i = 0; i < order.getItemCount(); ++i) {
+        if (order.getItem(i)->m_itemName.length() > maxItemNameLength) {
+            maxItemNameLength = order.getItem(i)->m_itemName.length();
+        }
     }
 
+    for (size_t i = 0; i < order.getItemCount(); ++i) {
+        os << "[" << std::setw(6) << std::setfill('0') << order.getItem(i)->m_serialNumber << "] ";
+        os << std::setw(static_cast<int>(maxItemNameLength)) << std::setfill(' ') << std::left << order.getItem(i)->m_itemName;
+
+        // Add extra spaces for alignment
+        os << std::setw(30 - maxItemNameLength) << std::setfill(' ') << "";
+
+        os << " - " << (order.getItem(i)->m_isFilled ? "FILLED" : "TO BE FILLED") << std::endl;
+    }
+
+    return os;
+    
+}
+
+
+
+
+//helpers MS3
+const std::string& CustomerOrder::getName() const {
+    return m_name;
+}
+
+const std::string& CustomerOrder::getProduct() const {
+    return m_product;
+}
+
+size_t CustomerOrder::getItemCount() const {
+    return m_cntItem;
+}
+
+const CustomerOrder::Item* CustomerOrder::getItem(size_t index) const {
+    if (index < m_cntItem) {
+        return m_lstItem[index];
+    } else {
+        return nullptr; // or throw an exception
+    }
+}
+//Helpers MS3
 }

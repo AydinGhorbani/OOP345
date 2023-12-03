@@ -54,7 +54,14 @@ namespace sdds {
         static void setWidthField(size_t width);
         
         std::string getItemName() const;
+        // helpers MS3
+        const std::string& getName() const;
+        const std::string& getProduct() const;
+        size_t getItemCount() const;
+        const Item* getItem(size_t index) const;
+        //
     };
+std::ostream& operator<<(std::ostream& os, const CustomerOrder& order);
 
 }
 
