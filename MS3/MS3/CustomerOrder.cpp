@@ -26,22 +26,13 @@ CustomerOrder::CustomerOrder(const std::string& record) : m_name(""), m_product(
     bool more = true;
     size_t next_pos = 0;
 
-    // Print the entire record
-    std::cout << "Record: " << record << std::endl;
-
     // Extract the first two tokens separately
     m_name = util.extractToken(record, next_pos, more);
-    std::cout << "Name: " << m_name << std::endl;
-
     m_product = util.extractToken(record, next_pos, more);
-    std::cout << "Product: " << m_product << std::endl;
-
-    m_cntItem = 0;
 
     // Count the number of items in the record
     while (more) {
-        std::string token = util.extractToken(record, next_pos, more);
-        std::cout << "Item Token: " << token << std::endl;
+        util.extractToken(record, next_pos, more);
         m_cntItem++;
     }
 
@@ -51,16 +42,10 @@ CustomerOrder::CustomerOrder(const std::string& record) : m_name(""), m_product(
     // Reset the position for token extraction
     next_pos = 0;
 
-    // Extract the first two tokens separately
-    m_name = util.extractToken(record, next_pos, more);
-    m_product = util.extractToken(record, next_pos, more);
-
     // Initialize m_lstItem with items from the record
     for (size_t i = 0; i < m_cntItem; ++i) {
         util.setFieldWidth(m_widthField);
-        std::string itemToken = util.extractToken(record, next_pos, more);
-        std::cout << "Item Token: " << itemToken << std::endl;
-        m_lstItem[i] = new Item(itemToken);
+        m_lstItem[i] = new Item(util.extractToken(record, next_pos, more));
         if (m_widthField < util.getFieldWidth()) {
             m_widthField = util.getFieldWidth();
         }

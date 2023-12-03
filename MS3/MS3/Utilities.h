@@ -29,7 +29,7 @@ class CustomerOrder;
         static void setDelimiter(char newDelimiter);
         static char getDelimiter();
         std::string extractToken(const std::string& str, size_t& next_pos, bool& more);
-        std::string trim(const std::string& str);
+        std::string trim(std::string& str)const;
         std::string getItemName() const;
         //MS3 update
         bool checkTokenCount(const std::string& record, size_t expectedCount) ;

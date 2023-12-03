@@ -19,14 +19,15 @@ namespace sdds {
     }
 
     // Move order to the next station
-    bool Workstation::moveOrder() {
-        if (!m_orders.empty() && m_pNextStation) {
-            *m_pNextStation += std::move(m_orders.front());
-            m_orders.pop_back();
-            return true;
-        }
-        return false;
+bool Workstation::moveOrder() {
+    if (!m_orders.empty() && m_pNextStation) {
+        *m_pNextStation += std::move(m_orders.front());
+        m_orders.erase(m_orders.begin());  // Equivalent to pop_front() for std::vector
+        return true;
     }
+    return false;
+}
+
 
     // Set the next station
     void Workstation::setNextStation(Workstation* station) {
@@ -58,7 +59,9 @@ namespace sdds {
 
     // Move order to the next workstation
     Workstation& Workstation::operator+=(CustomerOrder&& newOrder) {
-        m_orders.push_back(std::move(newOrder));
+        if (static_cast<void*>(this) != static_cast<void*>(&newOrder)){  // Check if not the same object
+            m_orders.push_back(std::move(newOrder));
+        }
         return *this;
     }
 }

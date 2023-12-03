@@ -10,83 +10,77 @@
  ****************************************
  */
 #include <iostream>
+#include <string>
 #include "Utilities.h"
 #include "CustomerOrder.h"
 
 namespace sdds {
-std::vector<CustomerOrder> g_pending;
-std::vector<CustomerOrder> g_completed;
-std::vector<CustomerOrder> g_incomplete;
-char Utilities::m_delimiter = '|';
+    std::vector<CustomerOrder> g_pending;
+    std::vector<CustomerOrder> g_completed;
+    std::vector<CustomerOrder> g_incomplete;
+    char Utilities::m_delimiter = '|';
 
-Utilities::Utilities() : m_widthField(1) {}
+    Utilities::Utilities() : m_widthField(1) {}
 
-void Utilities::setFieldWidth(size_t newWidth) {
-    m_widthField = newWidth;
-}
+    void Utilities::setFieldWidth(size_t newWidth) {
+        m_widthField = newWidth;
+    }
 
-size_t Utilities::getFieldWidth() const {
-    return m_widthField;
-}
+    size_t Utilities::getFieldWidth() const {
+        return m_widthField;
+    }
 
-void Utilities::setDelimiter(char newDelimiter) {
-    m_delimiter = newDelimiter;
-}
+    void Utilities::setDelimiter(char newDelimiter) {
+        m_delimiter = newDelimiter;
+    }
 
-char Utilities::getDelimiter() {
-    return m_delimiter;
-}
+    char Utilities::getDelimiter() {
+        return m_delimiter;
+    }
+
 std::string Utilities::extractToken(const std::string& str, size_t& next_pos, bool& more) {
     std::string token;
+    size_t delimiter_pos = str.find(m_delimiter, next_pos);
 
-    size_t delimiterPos = str.find(m_delimiter, next_pos);
-
-    if (delimiterPos != std::string::npos) {
-        token = str.substr(next_pos, delimiterPos - next_pos);
-        next_pos = delimiterPos + 1;
+    if (delimiter_pos != std::string::npos) {
+        token = str.substr(next_pos, delimiter_pos - next_pos);
+        next_pos = delimiter_pos + 1;
     } else {
         token = str.substr(next_pos);
-        next_pos = str.length();
+        more = false;
     }
 
-    m_widthField = std::max(token.length(), m_widthField);
-
-    more = (next_pos < str.length());
-
-    std::cout << "Token before trimming: [" << token << "]" << std::endl;
-
-       token = trim(token);
-
-       std::cout << "Token after trimming: [" << token << "]" << std::endl;
-
-       if (token.empty()) {
-           more = false;
-           throw std::string("ERROR: Empty token found.");
-       }
-
-       return token;
-   }
-
-
-std::string Utilities::trim(const std::string& str) {
-    size_t first = str.find_first_not_of(' ');
-    if (std::string::npos == first) {
-        return str;
+    if (token.empty()) {
+        throw std::out_of_range("Error: Empty token found.");
     }
-    size_t last = str.find_last_not_of(' ');
-    return str.substr(first, (last - first + 1));
+
+    trim(token);
+    return token;
 }
 
-bool Utilities::checkTokenCount(const std::string& record, size_t expectedCount)  {
-    size_t count = 0;
-    size_t pos = 0;
-    bool more = true;
-    
-    while (more) {
-        extractToken(record, pos, more);
-        ++count;
+
+std::string Utilities::trim(std::string& src)const {
+    size_t first = src.find_first_not_of(" \t\n");
+    if (first == std::string::npos) {
+        src.clear();  // Clear the string if it only contains whitespace characters
+    } else {
+        size_t last = src.find_last_not_of(" \t\n");
+        src = src.substr(first, last - first + 1);
+        
     }
-    
-    return count == expectedCount;
+    return src;
 }
+
+    bool Utilities::checkTokenCount(const std::string& record, size_t expectedCount) {
+        size_t count = 0;
+        size_t pos = 0;
+        bool more = true;
+
+        while (more) {
+            extractToken(record, pos, more);
+            ++count;
+        }
+
+        return count == expectedCount;
+    }
 }
