@@ -1,68 +1,69 @@
-#include <iostream>
-#include <iomanip>
-#include <algorithm>  // for std::find
+/*
+ ****************************************
+ Full Name  : Aydin Ghorbani
+ Student ID#: 124170226
+ Email      : aghorbani8@myseneca.ca
+ Repository : https://github.com/AydinGhorbani/OOP345/
+ 
+ plaese find every commit (Over 50 thought the semester) has been made in this link, icluding the debugging techniques used to develop this project.
+ 
+ I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+ The parts that i searched or got help to do are mentioned.
+ ****************************************
+ */
 #include "Workstation.h"
 #include "Station.h"
+#include "CustomerOrder.h"
 
 namespace sdds {
-    // Initialize the static member
-    std::vector<CustomerOrder> Workstation::m_orders;
+    std::deque<CustomerOrder> g_pending;
+    std::deque<CustomerOrder> g_completed;
+    std::deque<CustomerOrder> g_incomplete;
 
-    // Constructor
-    Workstation::Workstation(const std::string& str) : Station(str) {}
+    Workstation::Workstation(const std::string &str) : Station(str) {}
 
-    // Process the current Workstation
-    void Workstation::runProcess(std::ostream& os) {
-        if (!m_orders.empty()) {
+    void Workstation::fill(std::ostream &os) {
+        if (!m_orders.empty())
             m_orders.front().fillItem(*this, os);
-        }
     }
 
-    // Move order to the next station
-bool Workstation::moveOrder() const{
-    if (!m_orders.empty() && m_pNextStation) {
-        *m_pNextStation += std::move(m_orders.front());
-        m_orders.erase(m_orders.begin());  // Equivalent to pop_front() for std::vector
-        return true;
-    }
-    return false;
-}
+    bool Workstation::attemptToMoveOrder() {
+        bool moved = false;
 
+        if (m_orders.size() > 0) {
+            if ((m_orders.front().isOrderFilled()) || (m_orders.front().isItemFilled(getItemName())) || (getQuantity() < 1)) {
+                if (m_nextWorkStation)
+                    m_nextWorkStation->operator+=(std::move(m_orders.front()));
+                else if (m_orders.front().isOrderFilled())
+                    g_completed.push_back(std::move(m_orders.front()));
+                else
+                    g_incomplete.push_back(std::move(m_orders.front()));
+                m_orders.pop_front();
 
-    // Set the next station
-
-    void Workstation::setNextStation(Workstation* station) {
-        m_pNextStation = station;
-    }
-
-    // Get the next station
-    Workstation* Workstation::getNextStation() const {
-        return m_pNextStation;
-    }
-
-    // Display information about the Workstation
-    void Workstation::display(std::ostream& os, bool full) const {
-        Station::display(os, full);
-
-        if (!m_orders.empty()) {
-            os << " --> " << m_orders.front();
+                moved = true;
+            }
         }
 
-        os << std::endl;
+        return moved;
     }
 
-
-    // Move order to the current workstation
-    Workstation& Workstation::operator-=(CustomerOrder&& order) {
-        m_orders.push_back(std::move(order));
-        return *this;
+    void Workstation::setNextStation(Workstation *station) {
+        m_nextWorkStation = station;
     }
 
-    // Move order to the next workstation
-    Workstation& Workstation::operator+=(CustomerOrder&& newOrder) {
-        if (static_cast<void*>(this) != static_cast<void*>(&newOrder)){  // Check if not the same object
-            m_orders.push_back(std::move(newOrder));
-        }
+    Workstation *Workstation::getNextStation() const {
+        return m_nextWorkStation;
+    }
+
+    void Workstation::display(std::ostream &os) const {
+        if (m_nextWorkStation)
+            os << getItemName() << " --> " << m_nextWorkStation->getItemName() << std::endl;
+        else
+            os << getItemName() << " --> " << "End of Line" << std::endl;
+    }
+
+    Workstation &Workstation::operator+=(CustomerOrder &&newOrder) {
+        m_orders.push_back(std::move(newOrder));
         return *this;
     }
 }
