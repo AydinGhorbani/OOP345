@@ -13,6 +13,8 @@
 #ifndef SDDS_UTILITIES_H
 #define SDDS_UTILITIES_H
 
+#include <algorithm>
+#include <cctype>
 #include <vector>
 #include <string>
 
@@ -29,10 +31,11 @@ class CustomerOrder;
         static void setDelimiter(char newDelimiter);
         static char getDelimiter();
         std::string extractToken(const std::string& str, size_t& next_pos, bool& more);
-        std::string trim(std::string& str)const;
+        std::string trim(const std::string& str) ;
         std::string getItemName() const;
         //MS3 update
         bool checkTokenCount(const std::string& record, size_t expectedCount) ;
+        std::string toLower(const std::string& str) const;
     };
     extern std::vector<CustomerOrder> g_pending;
     extern std::vector<CustomerOrder> g_completed;

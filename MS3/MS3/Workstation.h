@@ -15,7 +15,7 @@ namespace sdds {
         Workstation(const std::string& str);
 
         void runProcess(std::ostream& os);
-        bool moveOrder();
+        bool moveOrder()const;
         void setNextStation(Workstation* station);
         Workstation* getNextStation() const;
         virtual void display(std::ostream& os, bool full) const;

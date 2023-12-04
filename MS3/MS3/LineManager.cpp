@@ -7,74 +7,55 @@
 #include "Utilities.h"
 
 namespace sdds {
-LineManager::LineManager(const std::string& filename, const std::vector<Workstation*>& stations) {
-    std::ifstream file(filename);
-    if (!file.is_open()) {
-        throw std::string("Unable to open [") + filename + "] file.";
-    }
-
-    std::string record;
-    Utilities util;
-    size_t next_pos = 0;
-    size_t pos = 0;
-    bool more = true;
-    
-    std::cout << "Stations Vector Content: ";
-    for (const auto& station : stations) {
-        std::cout << station->getItemName() << " ";
-    }
-    std::cout << std::endl;
-    // Read each record from the file
-    while (std::getline(file, record)) {
-        auto firstField = util.extractToken(record, next_pos, more);
-        try {
-            // Check if the token is empty
-            std::cout << "Token before trimming: [" << firstField << "]" << std::endl;
-            if (!firstField.empty()) {
-                // Find the corresponding workstation in the vector
-                auto it = std::find_if(stations.begin(), stations.end(), [&](const Workstation* station) {
-                    // Compare case-insensitively
-                    return station->getItemName().compare(firstField) == 0;
-                });
-
-                // If workstation found, set it as the next station for the current workstation
-                if (it != stations.end()) {
-                    if (m_firstStation == nullptr) {
-                        m_firstStation = *it;
-                    } else {
-                        (*it)->setNextStation(m_stations[pos - 1]);
-                    }
-
-                    // Add the workstation to the active line
-                    activeLine.push_back(*it);
-                    // Add the workstation to the vector of all stations
-                    m_stations.push_back(*it);
-                } else {
-                    // Handle error: Station not found
-                    std::cerr << "Warning: Station [" << firstField << "] not found. Skipping." << std::endl;
-
-                }
-
-                ++pos;
-            }
-        } catch (const std::out_of_range& e) {
-            // Print more information about the exception
-            std::cerr << "Error: Out of range exception caught. What: " << e.what() << std::endl;
-
-            // Print the record causing the issue
-            std::cerr << "Error: Record causing the issue: [" << record << "]" << std::endl;
-
-            // Print the position causing the issue
-            std::cerr << "Error: Position causing the issue: " << next_pos << std::endl;
-
-            // Optionally, you can re-throw the exception if needed
-            throw;
+LineManager::LineManager(const std::string& file, const std::vector<Workstation*>& stations) {
+        std::ifstream input(file);
+        if (!input.is_open()) {
+            throw std::string("Unable to open [") + file + "] file.";
         }
+
+        // Read all records from the file into a vector of strings
+        std::vector<std::string> records;
+        std::copy(std::istream_iterator<std::string>(input), std::istream_iterator<std::string>(), std::back_inserter(records));
+
+        Utilities util;
+        m_stations = stations;
+
+        // Iterate through each record using for_each and lambda
+        std::for_each(records.begin(), records.end(), [&](const std::string& record) {
+            size_t pos = 0;
+            bool more = true;
+
+            // Extract the first and next workstation names using Utilities
+            std::string firstWorkstation = util.extractToken(record, pos, more);
+            std::string nextWorkstation = util.extractToken(record, pos, more);
+
+            // Find the corresponding workstation in the vector
+            auto itFirst = std::find_if(stations.begin(), stations.end(), [&](const Workstation* station) {
+                return util.trim(station->getItemName()) == util.trim(firstWorkstation);
+            });
+
+            auto itNext = std::find_if(stations.begin(), stations.end(), [&](const Workstation* station) {
+                return util.trim(station->getItemName()) == util.trim(nextWorkstation);
+            });
+
+            // If both workstations are found, set the next workstation for the current workstation
+            if (itFirst != stations.end() && itNext != stations.end()) {
+                if (m_firstStation == nullptr) {
+                    m_firstStation = *itFirst;
+                }
+                (*itFirst)->setNextStation(*itNext);
+            } else {
+                // Handle error: Workstation not found
+                std::cerr << "Warning: Workstation [" << firstWorkstation << "] or [" << nextWorkstation << "] not found. Skipping." << std::endl;
+            }
+        });
+
+        // Calculate the total number of orders in the g_pending queue
+    m_cntCustomerOrder = std::count_if(m_stations.begin(), m_stations.end(), [](const Workstation* station) {
+        // Use moveOrder() to check if there are pending orders
+        return station->moveOrder();
+    });
     }
-
-    m_cntCustomerOrder = 0;
-}
-
 
 bool LineManager::run(std::ostream& os) {
     os << "Line Manager Iteration..." << std::endl;

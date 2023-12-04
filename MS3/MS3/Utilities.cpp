@@ -13,7 +13,7 @@
 #include <string>
 #include "Utilities.h"
 #include "CustomerOrder.h"
-
+using namespace std;
 namespace sdds {
     std::vector<CustomerOrder> g_pending;
     std::vector<CustomerOrder> g_completed;
@@ -40,35 +40,39 @@ namespace sdds {
 
 std::string Utilities::extractToken(const std::string& str, size_t& next_pos, bool& more) {
     std::string token;
-    size_t delimiter_pos = str.find(m_delimiter, next_pos);
-
-    if (delimiter_pos != std::string::npos) {
-        token = str.substr(next_pos, delimiter_pos - next_pos);
-        next_pos = delimiter_pos + 1;
+    size_t delimiterPos = str.find(m_delimiter, next_pos);
+    if (str.empty()) {
+        more = false;
+        throw std::string("ERROR: Input string is empty.");
+    }
+    cout << str<< endl<<endl;
+    if (delimiterPos != std::string::npos) {
+        token = str.substr(next_pos, delimiterPos - next_pos);
+        next_pos = delimiterPos + 1;
     } else {
         token = str.substr(next_pos);
+        next_pos = str.length();
+    }
+    m_widthField = std::max(token.length(), m_widthField);
+
+    more = (next_pos < str.length());
+    token = trim(token);
+    
+    if (token.empty() || token.find_first_not_of(' ') == std::string::npos) {
         more = false;
+        throw std::string("ERROR: No token.");
     }
 
-    if (token.empty()) {
-        throw std::out_of_range("Error: Empty token found.");
-    }
 
-    trim(token);
     return token;
 }
-
-
-std::string Utilities::trim(std::string& src)const {
-    size_t first = src.find_first_not_of(" \t\n");
-    if (first == std::string::npos) {
-        src.clear();  // Clear the string if it only contains whitespace characters
-    } else {
-        size_t last = src.find_last_not_of(" \t\n");
-        src = src.substr(first, last - first + 1);
-        
+std::string Utilities::trim(const std::string& str) {
+    size_t first = str.find_first_not_of(' ');
+    if (std::string::npos == first) {
+        return str;
     }
-    return src;
+    size_t last = str.find_last_not_of(' ');
+    return str.substr(first, (last - first + 1));
 }
 
     bool Utilities::checkTokenCount(const std::string& record, size_t expectedCount) {
@@ -82,5 +86,10 @@ std::string Utilities::trim(std::string& src)const {
         }
 
         return count == expectedCount;
+    }
+    std::string Utilities::toLower(const std::string& str) const {
+        std::string result = str;
+        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+        return result;
     }
 }

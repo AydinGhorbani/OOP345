@@ -19,7 +19,7 @@ namespace sdds {
     }
 
     // Move order to the next station
-bool Workstation::moveOrder() {
+bool Workstation::moveOrder() const{
     if (!m_orders.empty() && m_pNextStation) {
         *m_pNextStation += std::move(m_orders.front());
         m_orders.erase(m_orders.begin());  // Equivalent to pop_front() for std::vector
@@ -30,6 +30,7 @@ bool Workstation::moveOrder() {
 
 
     // Set the next station
+
     void Workstation::setNextStation(Workstation* station) {
         m_pNextStation = station;
     }
